@@ -16,20 +16,22 @@
     }
     * { box-sizing: border-box; }
     html, body {
-      height: 100%;
       margin: 0;
+      height: auto;
+      min-height: 100vh; /* 🔹 ensures gradient covers full scroll area */
       background: linear-gradient(180deg, #fffaf3 0%, #ffedd5 100%);
       color: var(--text);
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: 30px;
+      padding-top: 10px; /* 🔹 box slightly up */
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .wrap {
       width: 100%;
       display: flex;
       justify-content: center;
+      padding-bottom: 40px; /* 🔹 add spacing so gradient visible till end */
     }
     .card {
       background: var(--card);
