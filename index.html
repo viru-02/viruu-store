@@ -18,20 +18,20 @@
     html, body {
       margin: 0;
       height: auto;
-      min-height: 100vh; /* 🔹 ensures gradient covers full scroll area */
+      min-height: 100vh;
       background: linear-gradient(180deg, #fffaf3 0%, #ffedd5 100%);
       color: var(--text);
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      padding-top: 10px; /* 🔹 box slightly up */
+      padding-top: 10px;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .wrap {
       width: 100%;
       display: flex;
       justify-content: center;
-      padding-bottom: 40px; /* 🔹 add spacing so gradient visible till end */
+      padding-bottom: 40px;
     }
     .card {
       background: var(--card);
@@ -78,7 +78,43 @@
     }
     button:hover { background: var(--accent-hover); transform: translateY(-1px); }
 
-    footer { margin-top: 16px; color: var(--muted); font-size: 13px; text-align: center; }
+    footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .love {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .history {
+      background: #fff7ed;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    .history strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+      text-align: center;
+    }
+    .history-item {
+      font-family: monospace;
+      padding: 4px 6px;
+      border-radius: 6px;
+      background: #ffffff;
+      margin-bottom: 4px;
+      border: 1px solid #f3f4f6;
+      text-align: center;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -111,7 +147,15 @@
         <label class="checkbox"><input type="checkbox" id="noAmbig"> Avoid ambiguous (0,O,l,I)</label>
       </div>
 
-      <footer>Press <kbd>Enter</kbd> to generate, <kbd>Ctrl/Cmd+C</kbd> to copy</footer>
+      <div id="history" class="history" style="display:none;">
+        <strong>📜 Last 3 Copied Passwords</strong>
+        <div id="historyList"></div>
+      </div>
+
+      <footer>
+        Press <kbd>Enter</kbd> to generate, <kbd>Ctrl/Cmd+C</kbd> to copy <br>
+        <span class="love">💖 Made with love for DevOps</span>
+      </footer>
     </div>
   </div>
 
@@ -126,6 +170,10 @@
     const numCb = document.getElementById('numbers');
     const symCb = document.getElementById('symbols');
     const noAmbig = document.getElementById('noAmbig');
+    const historyDiv = document.getElementById('history');
+    const historyList = document.getElementById('historyList');
+
+    let passwordHistory = [];
 
     const sets = {
       lower: 'abcdefghijklmnopqrstuvwxyz',
@@ -165,11 +213,22 @@
       output.textContent = out;
     }
 
+    function updateHistory(newPass) {
+      passwordHistory.unshift(newPass);
+      if (passwordHistory.length > 3) passwordHistory.pop();
+
+      historyList.innerHTML = passwordHistory
+        .map(p => `<div class="history-item">${p}</div>`)
+        .join('');
+      historyDiv.style.display = 'block';
+    }
+
     function copyPassword() {
       const text = output.textContent.trim();
       if (!text || text.startsWith('Click')) return;
       navigator.clipboard.writeText(text);
       copyBtn.textContent = 'Copied!';
+      updateHistory(text);
       setTimeout(() => (copyBtn.textContent = 'Copy'), 1000);
     }
 
