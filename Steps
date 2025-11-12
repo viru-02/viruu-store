@@ -1,0 +1,13 @@
+step 1. Create a repository, then click 'Create new file.' The file name should be 'index.html,' and paste your custom HTML code and commit it.
+Step 2. In this repo, go to the settings and then click pages, then go branch section and save it to the main branch.
+step 3. After a few minutes, refresh this repo and check that your site is live.
+Step 4. Go to the Cloudflare records and save 3 CNAME records.
+
+CNAME  GitHub  viru-02.github.io
+CNAME  viruu.store  viru-02.github.io
+CNAME  www     viruu.store
+
+step 5. After adding the CNAME, go to your repo page and find the custom domain, and then save your domain. after a few times, it shows DNS CHECK SUCCESSFULLY 
+step 6. I hope to successfully deploy this mini project.
+
+check my linkdin profile - https://www.linkedin.com/in/mahendra-kumar-saini/
