@@ -3,196 +3,176 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Website Auditor — Static</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Password Generator — DevOps Toolbox</title>
   <style>
-    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
-    pre { white-space: pre-wrap; }
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --accent: #06b6d4;
+      --muted: #94a3b8;
+      --glass: rgba(255, 255, 255, 0.04);
+    }
+    * {
+      box-sizing: border-box;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: linear-gradient(180deg, #071023 0%, #061126 100%);
+      color: #e6eef6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wrap {
+      width: 100%;
+      max-width: 650px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 8px 32px rgba(2,6,23,0.7);
+      text-align: center;
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-3px); }
+
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    p.lead { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+
+    .field { background: var(--glass); padding: 16px; border-radius: 12px; margin-bottom: 14px; text-align: left; }
+    label { display: block; font-size: 14px; margin-bottom: 6px; }
+    input[type=range] { width: 100%; }
+
+    .checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 6px; }
+    .result { display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .output {
+      flex: 1;
+      background: var(--card);
+      padding: 12px;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 15px;
+      word-break: break-all;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover { background: #0ea5e9; }
+
+    .small { font-size: 13px; color: var(--muted); }
+    footer { margin-top: 16px; color: var(--muted); font-size: 13px; text-align: center; }
   </style>
 </head>
-<body class="bg-slate-50 p-6">
-  <div class="max-w-4xl mx-auto">
-    <h1 class="text-2xl font-bold mb-2">Website Auditor — Static (GitHub Pages)</h1>
-    <p class="text-sm text-slate-600 mb-4">Paste a URL and this static page will try to audit basic issues (title, meta, viewport, canonical, sitemap, robots and basic broken-link checks). Some sites block cross-origin requests — enable the CORS proxy option if you face issues.</p>
+<body>
+  <div class="wrap">
+    <div class="card" role="application">
+      <h1>🔐 Password Generator</h1>
+      <p class="lead">Generate strong and secure passwords instantly. Customize length, character types, and copy with one click.</p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-      <input id="url" class="col-span-2 p-3 border rounded" placeholder="https://example.com" />
-      <button id="run" class="px-4 py-3 bg-blue-600 text-white rounded">Run Audit</button>
-      <label class="flex items-center gap-2 col-span-3">
-        <input id="useProxy" type="checkbox" />
-        <span class="text-sm">Use public CORS proxy (helps when target blocks CORS). <span class="text-xs text-slate-500">(uses https://api.allorigins.win)</span></span>
-      </label>
+      <div class="field">
+        <div class="result">
+          <div id="output" class="output">Click "Generate" to create a password</div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
+          <button id="generateBtn">Generate</button>
+          <button id="copyBtn">Copy</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="length">Length: <strong id="lenVal">16</strong></label>
+        <input id="length" type="range" min="6" max="64" value="16">
+      </div>
+
+      <div class="field">
+        <label>Character sets</label>
+        <label class="checkbox"><input type="checkbox" id="lower" checked> Lowercase</label>
+        <label class="checkbox"><input type="checkbox" id="upper" checked> Uppercase</label>
+        <label class="checkbox"><input type="checkbox" id="numbers" checked> Numbers</label>
+        <label class="checkbox"><input type="checkbox" id="symbols" checked> Symbols</label>
+        <label class="checkbox"><input type="checkbox" id="noAmbig"> Avoid ambiguous (0,O,l,I)</label>
+      </div>
+
+      <footer>Press <kbd>Enter</kbd> to generate, <kbd>Ctrl/Cmd+C</kbd> to copy</footer>
     </div>
-
-    <div id="output" class="bg-white p-4 rounded border min-h-[200px] text-sm text-slate-700 overflow-auto"></div>
-
-    <details class="mt-4 text-xs text-slate-500">
-      <summary class="cursor-pointer">Notes / Limitations</summary>
-      <ul class="mt-2 pl-4 list-disc">
-        <li>Because this is <strong>static frontend</strong>, some checks (DNS, TLS certificate details, server headers blocked by CORS) are not available from the browser.</li>
-        <li>If direct fetch fails due to CORS, enable <em>Use public CORS proxy</em>. Public proxies have rate limits and reliability limits — for production use host your own proxy or use a backend.</li>
-        <li>Broken link checks are limited (first 50 links) and use the same-origin / proxy rules.</li>
-      </ul>
-    </details>
-
   </div>
 
   <script>
-    const out = document.getElementById('output');
-    const run = document.getElementById('run');
-    const input = document.getElementById('url');
-    const useProxyEl = document.getElementById('useProxy');
+    const output = document.getElementById('output');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const lengthRange = document.getElementById('length');
+    const lenVal = document.getElementById('lenVal');
+    const lowerCb = document.getElementById('lower');
+    const upperCb = document.getElementById('upper');
+    const numCb = document.getElementById('numbers');
+    const symCb = document.getElementById('symbols');
+    const noAmbig = document.getElementById('noAmbig');
 
-    function write(x) { out.innerHTML += x + '\n'; out.scrollTop = out.scrollHeight; }
-    function clear() { out.innerHTML = ''; }
+    const sets = {
+      lower: 'abcdefghijklmnopqrstuvwxyz',
+      upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      numbers: '0123456789',
+      symbols: '!@#$%^&*()-_=+[]{};:,.<>?/~'
+    };
+    const ambiguous = '0O1lI';
 
-    function normalize(v) {
-      try {
-        let u = v.trim();
-        if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
-        return new URL(u).toString();
-      } catch (e) { return null; }
+    function getCharset() {
+      let chars = '';
+      if (lowerCb.checked) chars += sets.lower;
+      if (upperCb.checked) chars += sets.upper;
+      if (numCb.checked) chars += sets.numbers;
+      if (symCb.checked) chars += sets.symbols;
+      if (noAmbig.checked) chars = chars.split('').filter(c => !ambiguous.includes(c)).join('');
+      return chars;
     }
 
-    // public CORS proxy (uses AllOrigins)
-    function proxyUrl(u) {
-      return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u);
+    function secureRandomInt(max) {
+      const array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      return Math.floor((array[0] / (0xFFFFFFFF + 1)) * max);
     }
 
-    async function fetchWithOptionalProxy(url, useProxy) {
-      try {
-        const res = await fetch(url, { method: 'GET', redirect: 'follow' });
-        if (!res.ok) throw new Error('status ' + res.status);
-        return { ok:true, text: await res.text(), finalUrl: res.url, status: res.status, headers: res.headers };
-      } catch (e) {
-        if (!useProxy) throw e;
-        // try via proxy
-        const purl = proxyUrl(url);
-        const res2 = await fetch(purl, { method: 'GET', redirect: 'follow' });
-        if (!res2.ok) throw new Error('proxy status ' + res2.status);
-        return { ok:true, text: await res2.text(), finalUrl: res2.url, status: res2.status, headers: res2.headers, viaProxy: true };
-      }
-    }
-
-    async function audit(url, useProxy=false) {
-      clear();
-      write('Starting audit for: ' + url);
-      write('Timestamp: ' + new Date().toLocaleString());
-
-      // 1) Try HEAD to get status quickly (may fail due to CORS)
-      try {
-        write('\n-> Checking HTTP status...');
-        let headRes;
-        try {
-          headRes = await fetch(url, { method: 'HEAD', redirect: 'follow' });
-          write('   HEAD status: ' + headRes.status + ' ' + headRes.statusText + ' (final: ' + headRes.url + ')');
-        } catch (e) {
-          write('   HEAD request failed (CORS or blocked). Will fallback to GET.');
-        }
-      } catch (e) { write('   HTTP status check error: ' + e.message); }
-
-      // 2) Fetch HTML (direct or via proxy)
-      write('\n-> Fetching HTML (this may be blocked by CORS on some sites)...');
-      let htmlText = '';
-      let finalUrl = url;
-      try {
-        const r = await fetchWithOptionalProxy(url, useProxy);
-        htmlText = r.text;
-        finalUrl = r.finalUrl || finalUrl;
-        write('   Fetched OK (status: ' + (r.status || 'unknown') + ') ' + (r.viaProxy ? '[via proxy]' : ''));
-      } catch (e) {
-        write('   Fetch error: ' + e.message);
-        write('\nAudit stopped: could not retrieve HTML. Try enabling the CORS proxy checkbox and run again.');
+    function generatePassword() {
+      const len = +lengthRange.value;
+      const charset = getCharset();
+      if (!charset) {
+        alert('Select at least one character set');
         return;
       }
-
-      // 3) Parse HTML
-      try {
-        write('\n-> Parsing HTML...');
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlText, 'text/html');
-        const title = (doc.querySelector('title') || { textContent: '' }).textContent.trim();
-        const metaDesc = (doc.querySelector('meta[name="description"]') || { getAttribute: ()=>'' }).getAttribute('content') || '';
-        const viewport = (doc.querySelector('meta[name="viewport"]') || { getAttribute: ()=>'' }).getAttribute('content') || '';
-        const canonical = (doc.querySelector('link[rel="canonical"]') || { getAttribute: ()=>'' }).getAttribute('href') || '';
-        const h1count = doc.querySelectorAll('h1').length;
-
-        write('   Title: ' + (title || '[missing]'));
-        write('   Meta description: ' + (metaDesc || '[missing]'));
-        write('   Viewport: ' + (viewport || '[missing]'));
-        write('   Canonical: ' + (canonical || '[missing]'));
-        write('   H1 count: ' + h1count);
-
-        if (!title) write('   ISSUE: Missing <title> tag');
-        if (!metaDesc) write('   ISSUE: Missing meta description');
-        if (!viewport) write('   ISSUE: Missing viewport meta tag - may not be mobile-friendly');
-
-        // robots and sitemap
-        write('\n-> Checking robots.txt and sitemap.xml (may be blocked by CORS)');
-        try {
-          const u = new URL(finalUrl);
-          const robots = u.origin + '/robots.txt';
-          const sitemap = u.origin + '/sitemap.xml';
-          try {
-            const r1 = await fetchWithOptionalProxy(robots, useProxy);
-            write('   robots.txt: OK (fetched)');
-          } catch (e) { write('   robots.txt: not accessible (' + e.message + ')'); }
-          try {
-            const r2 = await fetchWithOptionalProxy(sitemap, useProxy);
-            write('   sitemap.xml: OK (fetched)');
-          } catch (e) { write('   sitemap.xml: not accessible (' + e.message + ')'); }
-        } catch (e) { write('   robots/sitemap check error: ' + e.message); }
-
-        // collect links
-        write('\n-> Collecting links (first 50) and checking status (may be slow)...');
-        const anchors = Array.from(doc.querySelectorAll('a[href]')).map(a=>a.getAttribute('href')).filter(Boolean);
-        write('   Found ' + anchors.length + ' anchors; checking up to 50 links...');
-        const toCheck = anchors.slice(0,50);
-        const broken = [];
-        for (let i=0;i<toCheck.length;i++) {
-          const raw = toCheck[i];
-          // ignore anchors and mailto
-          if (/^(javascript:|mailto:|#)/i.test(raw)) continue;
-          let link;
-          try { link = new URL(raw, finalUrl).toString(); } catch (e) { continue; }
-          write('     Checking: ' + link);
-          try {
-            // try HEAD first
-            let status = null;
-            try {
-              const h = await fetch(link, { method: 'HEAD', redirect: 'follow' });
-              status = h.status;
-            } catch (e) {
-              // fallback to GET via optional proxy
-              if (!useProxy) {
-                write('       HEAD failed (CORS). Skipping or enable proxy to check.');
-                continue;
-              }
-              const rr = await fetchWithOptionalProxy(link, useProxy);
-              status = rr.status || 200;
-            }
-            if (status >= 400 || status < 200) { broken.push({ link, status }); write('       -> BROKEN (status ' + status + ')'); }
-            else write('       -> OK (status ' + status + ')');
-          } catch (e) { broken.push({ link, status: 'error' }); write('       -> ERROR (' + e.message + ')'); }
-        }
-        write('\n   Broken links found: ' + broken.length);
-        if (broken.length) broken.slice(0,20).forEach(b => write('     - ' + b.link + ' -> ' + b.status));
-
-      } catch (e) { write('   HTML parse/checks error: ' + e.message); }
-
-      write('\nAudit finished.');
+      let out = '';
+      for (let i = 0; i < len; i++) {
+        out += charset[secureRandomInt(charset.length)];
+      }
+      output.textContent = out;
     }
 
-    run.addEventListener('click', async () => {
-      const raw = input.value;
-      const normalized = normalize(raw);
-      if (!normalized) { alert('Please enter a valid URL'); return; }
-      const useProxy = useProxyEl.checked;
-      await audit(normalized, useProxy);
-    });
+    function copyPassword() {
+      const text = output.textContent.trim();
+      if (!text || text.startsWith('Click')) return;
+      navigator.clipboard.writeText(text);
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => (copyBtn.textContent = 'Copy'), 1000);
+    }
 
-    // allow Enter to trigger
-    input.addEventListener('keydown', (e)=>{ if (e.key === 'Enter') run.click(); });
+    lengthRange.addEventListener('input', () => (lenVal.textContent = lengthRange.value));
+    generateBtn.addEventListener('click', generatePassword);
+    copyBtn.addEventListener('click', copyPassword);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') generatePassword();
+    });
   </script>
 </body>
 </html>
