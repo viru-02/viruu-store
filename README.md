@@ -1,1 +1,0 @@
-# viruu-store
