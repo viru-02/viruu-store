@@ -6,59 +6,67 @@
   <title>Password Generator — DevOps Toolbox</title>
   <style>
     :root {
-      --bg: #0f1724;
-      --card: #0b1220;
-      --accent: #06b6d4;
-      --muted: #94a3b8;
-      --glass: rgba(255, 255, 255, 0.04);
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
     }
     * {
       box-sizing: border-box;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
     }
     html, body {
       height: 100%;
       margin: 0;
-      background: linear-gradient(180deg, #071023 0%, #061126 100%);
-      color: #e6eef6;
+      background: linear-gradient(180deg, #f9fafb 0%, #e5e7eb 100%);
+      color: var(--text);
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
+      padding-top: 60px;
     }
     .wrap {
       width: 100%;
-      max-width: 650px;
+      max-width: 600px;
       margin: 0 auto;
-      padding: 24px;
+      padding: 20px;
     }
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 8px 32px rgba(2,6,23,0.7);
+      background: var(--card);
+      border-radius: 18px;
+      padding: 30px 26px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
       text-align: center;
-      backdrop-filter: blur(6px);
-      transition: transform 0.2s;
+      border: 1px solid var(--border);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-    .card:hover { transform: translateY(-3px); }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+    }
 
-    h1 { margin: 0 0 8px; font-size: 24px; }
-    p.lead { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+    h1 { margin: 0 0 10px; font-size: 26px; color: var(--accent); }
+    p.lead { margin: 0 0 22px; color: var(--muted); font-size: 14px; }
 
-    .field { background: var(--glass); padding: 16px; border-radius: 12px; margin-bottom: 14px; text-align: left; }
+    .field { background: #f9fafb; padding: 16px; border-radius: 12px; margin-bottom: 16px; text-align: left; border: 1px solid var(--border); }
     label { display: block; font-size: 14px; margin-bottom: 6px; }
-    input[type=range] { width: 100%; }
+    input[type=range] { width: 100%; accent-color: var(--accent); }
 
     .checkbox { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 6px; }
     .result { display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
     .output {
       flex: 1;
-      background: var(--card);
+      background: #f3f4f6;
       padding: 12px;
       border-radius: 10px;
       font-family: monospace;
       font-size: 15px;
       word-break: break-all;
+      color: var(--text);
+      border: 1px solid var(--border);
     }
     button {
       background: var(--accent);
@@ -67,19 +75,19 @@
       padding: 10px 16px;
       border-radius: 8px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: background 0.2s ease, transform 0.1s ease;
     }
-    button:hover { background: #0ea5e9; }
+    button:hover { background: var(--accent-hover); transform: translateY(-1px); }
 
     .small { font-size: 13px; color: var(--muted); }
-    footer { margin-top: 16px; color: var(--muted); font-size: 13px; text-align: center; }
+    footer { margin-top: 18px; color: var(--muted); font-size: 13px; text-align: center; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card" role="application">
       <h1>🔐 Password Generator</h1>
-      <p class="lead">Generate strong and secure passwords instantly. Customize length, character types, and copy with one click.</p>
+      <p class="lead">Generate strong, secure passwords instantly — customize length and character sets easily.</p>
 
       <div class="field">
         <div class="result">
